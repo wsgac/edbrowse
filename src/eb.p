@@ -237,15 +237,15 @@ int eopen(const char *name, int mode, int perms) ;
 void appendFile(const char *fname, const char *message, ...) ;
 void appendFileNF(const char *filename, const char *msg) ;
 
-/* sourcefile=jsdom.c */
+/* sourcefile=jsdom.cpp */
 void * createJavaContext(void) ;
 void freeJavaContext(void *jsc) ;
 void establish_innerHTML(void *jv, const char *start, const char *end, eb_bool is_ta) ;
 void jMyContext(void) ;
-eb_bool javaParseExecute(void *this, const char *str, const char *filename, int lineno) ;
+eb_bool javaParseExecute(void *this_js, const char *str, const char *filename, int lineno) ;
 void * domLink(const char *classname, const char *symname, const char *idname, const char *href, const char *href_url, const char *list, void *owner, int radiosel) ;
 
-/* sourcefile=jsloc.c */
+/* sourcefile=jsloc.cpp */
 void establish_property_string(void *jv, const char *name, const char *value, eb_bool readonly) ;
 void establish_property_number(void *jv, const char *name, int value, eb_bool readonly) ;
 void establish_property_bool(void *jv, const char *name, eb_bool value, eb_bool readonly) ;

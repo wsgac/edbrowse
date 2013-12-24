@@ -238,13 +238,13 @@ trueFunction(JSContext * cx, uintN argc, jsval * vp)
 static JSBool
 setAttribute(JSContext * cx, uintN argc, jsval * vp)
 {
-    JSObject *this = JS_THIS_OBJECT(cx, vp);
+    JSObject *this_js = JS_THIS_OBJECT(cx, vp);
     jsval *argv = JS_ARGV(cx, vp);
     if(argc != 2 || !JSVAL_IS_STRING(argv[0])) {
 	JS_ReportError(jcx, "unexpected arguments to setAttribute()");
     } else {
 	const char *prop = stringize(argv[0]);
-	JS_DefineProperty(jcx, this, prop, argv[1], NULL, NULL, PROP_FIXED);
+	JS_DefineProperty(jcx, this_js, prop, argv[1], NULL, NULL, PROP_FIXED);
     }
     JS_SET_RVAL(cx, vp, JSVAL_VOID);
     return JS_TRUE;
@@ -257,8 +257,8 @@ appendChild(JSContext * cx, uintN argc, jsval * vp)
     jsuint length;
     jsval v;
     jsval *argv = JS_ARGV(cx, vp);
-    JSObject *this = JS_THIS_OBJECT(cx, vp);
-    JS_GetProperty(jcx, this, "elements", &v);
+    JSObject *this_js = JS_THIS_OBJECT(cx, vp);
+    JS_GetProperty(jcx, this_js, "elements", &v);
     elar = JSVAL_TO_OBJECT(v);
     JS_GetArrayLength(jcx, elar, &length);
     JS_DefineElement(jcx, elar, length,
@@ -605,8 +605,8 @@ static JSClass form_class = {
 static JSBool
 form_submit(JSContext * cx, uintN argc, jsval * vp)
 {
-    JSObject *this = JS_THIS_OBJECT(cx, vp);
-    javaSubmitsForm(this, eb_false);
+    JSObject *this_js = JS_THIS_OBJECT(cx, vp);
+    javaSubmitsForm(this_js, eb_false);
     JS_SET_RVAL(cx, vp, JSVAL_VOID);
     return JS_TRUE;
 }				/* form_submit */
@@ -614,8 +614,8 @@ form_submit(JSContext * cx, uintN argc, jsval * vp)
 static JSBool
 form_reset(JSContext * cx, uintN argc, jsval * vp)
 {
-    JSObject *this = JS_THIS_OBJECT(cx, vp);
-    javaSubmitsForm(this, eb_true);
+    JSObject *this_js = JS_THIS_OBJECT(cx, vp);
+    javaSubmitsForm(this_js, eb_true);
     JS_SET_RVAL(cx, vp, JSVAL_VOID);
     return JS_TRUE;
 }				/* form_reset */
@@ -802,17 +802,17 @@ case 'image': case 'img': return new Image();\n\
 default: /* alert('createElement default ' + s); */ return new Object(); }} \n\
 \n\
 URL.prototype.indexOf = function(s) { \n\
-return this.toString().indexOf(s); }\n\
+return this_js.toString().indexOf(s); }\n\
 URL.prototype.lastIndexOf = function(s) { \n\
-return this.toString().lastIndexOf(s); }\n\
+return this_js.toString().lastIndexOf(s); }\n\
 URL.prototype.substring = function(from, to) { \n\
-return this.toString().substring(from, to); }\n\
+return this_js.toString().substring(from, to); }\n\
 URL.prototype.toLowerCase = function() { \n\
-return this.toString().toLowerCase(); }\n\
+return this_js.toString().toLowerCase(); }\n\
 URL.prototype.toUpperCase = function() { \n\
-return this.toString().toUpperCase(); }\n\
+return this_js.toString().toUpperCase(); }\n\
 URL.prototype.match = function(s) { \n\
-return this.toString().match(s); }\n\
+return this_js.toString().match(s); }\n\
 \n\
 history.toString = function() { \n\
 return 'Sorry, edbrowse does not maintain a browsing history.'; } \
@@ -905,7 +905,8 @@ createJavaContext(void)
     establish_property_url(jdoc, "URL", cw->fileName, eb_true);
     establish_property_url(jdoc, "location", cw->fileName, eb_false);
     establish_property_url(jwin, "location", cw->firstURL, eb_false);
-    establish_property_string(jdoc, "domain", getHostURL(cw->fileName), eb_false);
+    establish_property_string(jdoc, "domain", getHostURL(cw->fileName),
+       eb_false);
 
 /* create arrays under document */
     for(i = 0; itemname = docarrays[i]; ++i)
@@ -1075,7 +1076,8 @@ jMyContext(void)
 }				/* jMyContext */
 
 eb_bool
-javaParseExecute(void *this, const char *str, const char *filename, int lineno)
+javaParseExecute(void *this_js, const char *str, const char *filename,
+   int lineno)
 {
     JSBool ok;
     eb_bool rc;
@@ -1086,7 +1088,7 @@ javaParseExecute(void *this, const char *str, const char *filename, int lineno)
 	str += 3;
 
     debugPrint(6, "javascript:\n%s", str);
-    ok = JS_EvaluateScript(jcx, this, str, strlen(str),
+    ok = JS_EvaluateScript(jcx, this_js, str, strlen(str),
        filename, lineno, &rval);
     rc = eb_true;
     if(JSVAL_IS_BOOLEAN(rval))

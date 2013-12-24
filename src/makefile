@@ -95,7 +95,7 @@ edbrowseodbc: $(EBOBJS) tcp.o dbops.o dbodbc.o
 proto: ../tools/mkproto
 	../tools/mkproto -g main.c buffers.c url.c auth.c http.c messages.c \
 	sendmail.c fetchmail.c html.c \
-	format.c cookies.c stringfile.c jsdom.c jsloc.c dbstubs.c >eb.p
+	format.c cookies.c stringfile.c jsdom.cpp jsloc.cpp dbstubs.c >eb.p
 
 # Can't think of a better way to insure that mkproto is built:
 ../tools/mkproto: ../tools/mkproto.c
